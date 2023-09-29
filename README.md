@@ -2,7 +2,7 @@
 
 ## Questions
 
-### Cycle - 1
+### Cycle - 1 (C lang review)
 
 1. You are given two arrays sorted in ascending order. Write a C Program to merge the elements of the two arrays and to form a single array sorted in ascending order.
 2. Given a string s, write a C program to find the length of the longest substring without repeating characters. Also, display the substring.
