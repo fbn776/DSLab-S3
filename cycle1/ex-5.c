@@ -1,3 +1,7 @@
+/**
+ * Binary search using pointers
+ */
+
 #include <stdio.h>
 
 void bubbleSort(int *start, int *end) {

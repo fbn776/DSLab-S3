@@ -1,3 +1,7 @@
+/**
+ * Array merge without sort
+ */
+
 #include <stdio.h>
 
 void findLongestSubstring(char *str) {

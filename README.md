@@ -14,7 +14,14 @@
    - string concatenation (`void StringConcat(char *s1, char *s2)`)
 5. Implement bubble sort without using an array (Use pointers instead)
 
-### Cycle - 2
+
+### Cycle - 2 (Search)
+
+1. Implement Linear Search.
+2. Implement Binary Search.
+3. Implement Stack using an array.
+4. Write a program in C to check whether a string is palindrome or not, using stack.
+
 
 ### Cycle - 3
 

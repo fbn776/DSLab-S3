@@ -1,8 +1,7 @@
 /*
- * Ex - 29
  * String library functions using pointers
- *
  */
+
 #include <stdio.h>
 
 int StringLength(char *s) {

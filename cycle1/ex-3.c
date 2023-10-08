@@ -1,10 +1,13 @@
+/**
+ * Lowest number
+ */
 
 #include <stdio.h>
 
 int main() {
 	int ls[100], n, min, i;
 
-	printf("Enter number of elmements: ");
+	printf("Enter number of elements: ");
 	scanf(" %d", &n);
 
 	printf("Enter numbers: ");
