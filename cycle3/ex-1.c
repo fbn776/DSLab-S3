@@ -119,7 +119,7 @@ float evalExpr(char opr, float a, float b) {
 	}
 }
 
-float evalPostfix(char P[]) {
+float evalPostfix(char postfix[]) {
 	char curr;
 	float Stack[100];
 	int i, top = -1;
@@ -128,8 +128,8 @@ float evalPostfix(char P[]) {
 	// (a(A) -> 0, b(B) -> 2 ... z(Z) -> 25
 	float values[26][2] = {{0, 0}};
 
-	for (i = 0; P[i] != '\0'; i++) {
-		curr = P[i];
+	for (i = 0; postfix[i] != '\0'; i++) {
+		curr = postfix[i];
 		if (isOperand(curr)) {
 			int val = getAlphaPos(curr);
 			//Get value from user of the current operand;

@@ -24,26 +24,25 @@
 
 ### Cycle - 3
 
-1.	Using stack, convert an infix expression to a postfix expression and evaluate the postfix expression.
-2.	Write a program to convert an infix expression to a prefix expression using stack.
-3.	Convert an infix expression to a postfix expression without using stack.
-4.	Implement a Queue using arrays with the operations:
+1. Using stack, convert an infix expression to a postfix expression and evaluate the postfix expression.
+2. Write a program to convert an infix expression to a prefix expression using stack.
+3. Convert an infix expression to a postfix expression without using stack.
+4. Implement a Queue using arrays with the operations:
    - Insert elements into the queue 
    - Delete elements from the queue
    - Display the contents of the queue after each operation
-5.	Implement a Circular Queue using arrays with the operations:
+5. Implement a Circular Queue using arrays with the operations:
    - Insert elements into the queue
    - Delete elements from the queue
    - Display the contents of the queue after each operation
-6.	Implement a Priority Queue using arrays with the operations:
+6. Implement a Priority Queue using arrays with the operations:
    - Insert elements into the queue
    - Delete elements from the queue
    - Display the contents of the queue after each operation
-7.	Implement a Double-Ended Queue using arrays with the operations:
+7. Implement a Double-Ended Queue using arrays with the operations:
    - Insert elements into the queue (both front and rear)
    - Delete elements from the queue (both front and rear)
    - Display the contents of the queue after each operation
-
 
 ### Cycle - 4
 
