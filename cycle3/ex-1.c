@@ -1,13 +1,25 @@
 #include <stdio.h>
+#include <math.h>
 
 //// STACK OPERATIONS
 void Push(char s[], int *top, char item) {
 	s[++(*top)] = item;
 }
 
+void PushF(float s[], int *top, float item) {
+	s[++(*top)] = item;
+}
+
 char Pop(char s[], int *top) {
 	if (*top == -1)
 		return '\0';
+
+	return s[(*top)--];
+}
+
+float PopF(float s[], int *top) {
+	if (*top == -1)
+		return 0;
 
 	return s[(*top)--];
 }
@@ -38,52 +50,122 @@ int getPrecedence(char ch) {
 	}
 }
 
-int main() {
-	char Stack[100], Q[100] = "a^b^c", P[100], curr;
+/**Converts infix to postfix**/
+int convertInfixToPostfix(char infix[], char postfix[]) {
+	char Stack[100], curr;
 	int top = -1, len = 0, i, j = 0;
 
-//	printf("Enter Expression: ");
-//	scanf("%[^\n]", Q);
-
 	//Find length
-	for (; Q[len] != '\0'; len++);
+	for (; infix[len] != '\0'; len++);
 
 	//Add initial brackets
 	Push(Stack, &top, '(');
-	Q[len++] = ')';
-	Q[len] = '\0';
+	infix[len++] = ')';
+	infix[len] = '\0';
 
-	for (i = 0; Q[i] != '\0'; i++) {
-		curr = Q[i];
+	for (i = 0; infix[i] != '\0'; i++) {
+		curr = infix[i];
 		if (curr == ' ' || curr == '\t')
 			continue;
 
 
 		if (isOperand(curr)) {
-			P[j++] = curr;
+			postfix[j++] = curr;
 		} else if (curr == '(') {
 			Push(Stack, &top, curr);
 		} else if (isOperator(curr)) {
 
 			while (top > -1 && getPrecedence(curr) <= getPrecedence(Stack[top])) {
 				char item = Pop(Stack, &top);
-				P[j++] = item;
+				postfix[j++] = item;
 			}
 			Push(Stack, &top, curr);
 
 		} else if (curr == ')') {
 			while (top > -1 && Stack[top] != '(') {
 				char item = Pop(Stack, &top);
-				P[j++] = item;
+				postfix[j++] = item;
 			}
 			Pop(Stack, &top);
 		} else {
-			printf("Error is expression\n");
-			break;
+			return 0;
 		}
 	}
-	P[j] = '\0';
+	postfix[j] = '\0';
+	return 1;
+}
 
-	printf("P: %s\n", P);
+int getAlphaPos(char ch) {
+	if (ch >= 'a' && ch <= 'z')
+		ch -= 32;
+
+	return ch - 'A';
+}
+
+float evalExpr(char opr, float a, float b) {
+	switch (opr) {
+		case '+':
+			return a + b;
+		case '-':
+			return a - b;
+		case '*':
+			return a * b;
+		case '/':
+			return a / b;
+		case '^':
+			return powf(a, b);
+		default:
+			return 0;
+	}
+}
+
+float evalPostfix(char P[]) {
+	char curr;
+	float Stack[100];
+	int i, top = -1;
+	//Stores value (taken from user) of the operands (alphabets) in the index of its alphabetic position;
+	//Each element is an array of len 2, representing [value, first-time?]
+	// (a(A) -> 0, b(B) -> 2 ... z(Z) -> 25
+	float values[26][2] = {{0, 0}};
+
+	for (i = 0; P[i] != '\0'; i++) {
+		curr = P[i];
+		if (isOperand(curr)) {
+			int val = getAlphaPos(curr);
+			//Get value from user of the current operand;
+			if(values[val][1] == 0) {
+				printf("Enter %c: ", curr);
+				scanf(" %f", &values[val][0]);
+				//Visited = true
+				values[val][1] = 1;
+			}
+			PushF(Stack, &top, values[val][0]);
+		} else if (isOperator(curr)) {
+			float b = PopF(Stack, &top),
+				  a = PopF(Stack, &top), c;
+			c = evalExpr(curr, a, b);
+			PushF(Stack, &top, c);
+		}
+	}
+
+	return Stack[0];
+}
+
+int main() {
+	char Q[100], P[100];
+	int status;
+
+	printf("Enter Expression: ");
+	scanf("%[^\n]", Q);
+
+	status = convertInfixToPostfix(Q, P);
+
+	if (status) {
+		printf("P: %s\n", P);
+
+		printf("result: %f\n", evalPostfix(P));
+
+	} else
+		printf("Error in expression\n");
 
 }
