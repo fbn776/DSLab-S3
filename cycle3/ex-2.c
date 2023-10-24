@@ -26,15 +26,22 @@ char pop(struct Stack *stack) {
 }
 
 int isOperator(char ch) {
-	return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
+	return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
 int getPrecedence(char ch) {
-	if (ch == '+' || ch == '-')
-		return 1;
-	if (ch == '*' || ch == '/')
-		return 2;
-	return 0;
+	switch (ch) {
+		case '+':
+		case '-':
+			return 1;
+		case '*':
+		case '/':
+			return 2;
+		case '^':
+			return 3;
+		default:
+			return 0;
+	}
 }
 
 void infixToPrefix(char infix[], char prefix[]) {
