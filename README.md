@@ -40,8 +40,8 @@
    - Delete elements from the queue
    - Display the contents of the queue after each operation
 7. Implement a Double-Ended Queue using arrays with the operations:
-   - Insert elements into the queue (both front and rear)
-   - Delete elements from the queue (both front and rear)
+   - Insert elements into the queue (both front and size)
+   - Delete elements from the queue (both front and size)
    - Display the contents of the queue after each operation
 
 ### Cycle - 4
