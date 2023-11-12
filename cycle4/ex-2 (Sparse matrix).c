@@ -9,12 +9,19 @@ typedef struct {
 	int arr[100][3];
 } SpareMatrix;
 
-void printLine(int c, char ch, char ends, int borderSpace, char borderChar) {
+/**Prints a line to the stdout
+ * @param len The length of the line
+ * @param lineChar The character to be used for the lines
+ * @param endsChar The character to be used at both ends (start and end)
+ * @param borderSpace The space between each border. A special character is placed there
+ * @param borderChar The character to be inserted at the borders
+ */
+void printLine(int len, char lineChar, char endsChar, int borderSpace, char borderChar) {
 	int i;
-	printf("%c", ends);
-	for(i = 0; i < c; i++)
-		printf("%c", ((i + 1) % borderSpace == 0) ? borderChar : ch);
-	printf("%c\n", ends);
+	printf("%c", endsChar);
+	for(i = 0; i < len; i++)
+		printf("%c", ((i + 1) % borderSpace == 0) ? borderChar : lineChar);
+	printf("%c\n", endsChar);
 }
 
 void readMatrix(Matrix *A) {
