@@ -1,34 +1,57 @@
 #include <stdio.h>
 #include <string.h>
-
 #define MAX_SIZE 100
 
-struct Stack {
-	int top;
-	char items[MAX_SIZE];
-};
 
-void push(struct Stack *stack, char item) {
-	if (stack->top == MAX_SIZE - 1) {
-		printf("Stack is full\n");
-	} else {
-		stack->items[++stack->top] = item;
+int StrLen(char str[]) {
+	int i = 0;
+	for(; str[i]; i++) ;
+	return i;
+}
+
+void StrRev(char str[]) {
+	int len = StrLen(str), i = 0, j;
+	for(j = len - 1; i < len/2; i++, j--) {
+		char temp = str[i];
+		str[i] = str[j];
+		str[j] = temp;
 	}
 }
 
-char pop(struct Stack *stack) {
-	if (stack->top == -1) {
-		printf("Stack is empty\n");
+//// STACK OPERATIONS
+void Push(char s[], int *top, char item) {
+	s[++(*top)] = item;
+}
+
+void PushF(float s[], int *top, float item) {
+	s[++(*top)] = item;
+}
+
+char Pop(char s[], int *top) {
+	if (*top == -1)
 		return '\0';
-	} else {
-		return stack->items[stack->top--];
-	}
+
+	return s[(*top)--];
 }
 
+float PopF(float s[], int *top) {
+	if (*top == -1)
+		return 0;
+
+	return s[(*top)--];
+}
+
+/**Checks if a given character is an operand**/
+int isOperand(char ch) {
+	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+
+/**Checks if a given character is an operator**/
 int isOperator(char ch) {
 	return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
+/**Gets the precedence of an operator**/
 int getPrecedence(char ch) {
 	switch (ch) {
 		case '+':
@@ -44,45 +67,53 @@ int getPrecedence(char ch) {
 	}
 }
 
-void infixToPrefix(char infix[], char prefix[]) {
-	struct Stack operatorStack;
-	operatorStack.top = -1;
+/**Converts infix to prefix**/
+int convertInfixToPrefix(char infix[], char prefix[]) {
+	char revInfix[100];
+	strcpy(revInfix, infix);
+	StrRev(revInfix);
 
-	int infixLength = strlen(infix);
-	int prefixIndex = 0;
+	char Stack[100], curr;
+	int top = -1, len = 0, i, j = 0;
 
-	for (int i = infixLength - 1; i >= 0; i--) {
-		char ch = infix[i];
+	//Find length
+	for (; revInfix[len] != '\0'; len++);
 
-		if(ch == ' ' || ch == '\t')
+	//Add initial brackets
+	Push(Stack, &top, '(');
+	revInfix[len++] = ')';
+	revInfix[len] = '\0';
+
+	for (i = 0; revInfix[i] != '\0'; i++) {
+		curr = revInfix[i];
+		if (curr == ' ' || curr == '\t')
 			continue;
 
-		if (isOperator(ch)) {
-			while (operatorStack.top != -1 && getPrecedence(ch) < getPrecedence(operatorStack.items[operatorStack.top])) {
-				prefix[prefixIndex++] = pop(&operatorStack);
+		if (isOperand(curr)) {
+			prefix[j++] = curr;
+		} else if (curr == '(') {
+			Push(Stack, &top, curr);
+		} else if (isOperator(curr)) {
+
+			while (top > -1 && getPrecedence(curr) <= getPrecedence(Stack[top])) {
+				char item = Pop(Stack, &top);
+				prefix[j++] = item;
 			}
-			push(&operatorStack, ch);
-		} else if (ch == ')') {
-			push(&operatorStack, ch);
-		} else if (ch == '(') {
-			while (operatorStack.top != -1 && operatorStack.items[operatorStack.top] != ')') {
-				prefix[prefixIndex++] = pop(&operatorStack);
+			Push(Stack, &top, curr);
+
+		} else if (curr == ')') {
+			while (top > -1 && Stack[top] != '(') {
+				char item = Pop(Stack, &top);
+				prefix[j++] = item;
 			}
-			if (operatorStack.top != -1 && operatorStack.items[operatorStack.top] == ')') {
-				pop(&operatorStack); // Pop the '('
-			}
+			Pop(Stack, &top);
 		} else {
-			prefix[prefixIndex++] = ch;
+			return 0;
 		}
 	}
-
-	while (operatorStack.top != -1) {
-		prefix[prefixIndex++] = pop(&operatorStack);
-	}
-
-	prefix[prefixIndex] = '\0';
-
-	strrev(prefix);
+	StrRev(prefix);
+	prefix[j] = '\0';
+	return 1;
 }
 
 int main() {
@@ -90,7 +121,7 @@ int main() {
 	printf("Enter the infix expression: ");
 	scanf(" %[^\n]", infix);
 
-	infixToPrefix(infix, prefix);
+	convertInfixToPrefix(infix, prefix);
 	printf("The prefix expression is: %s\n", prefix);
 
 	return 0;

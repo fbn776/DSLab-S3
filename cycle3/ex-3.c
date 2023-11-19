@@ -33,7 +33,7 @@ void infixToPostfix(char infix[], char postfix[]) {
 		char ch = infix[i];
 
 		if (ch == ' ' || ch == '\t') {
-			continue; // Skip spaces and tabs
+			continue;
 		} else if (isOperator(ch)) {
 			while (stackIndex > 0 && getPrecedence(ch) <= getPrecedence(operatorStack[stackIndex - 1])) {
 				postfix[postfixIndex++] = operatorStack[--stackIndex];
@@ -48,7 +48,7 @@ void infixToPostfix(char infix[], char postfix[]) {
 				postfix[postfixIndex++] = ' ';
 			}
 			if (stackIndex > 0 && operatorStack[stackIndex - 1] == '(') {
-				stackIndex--; // Pop the '('
+				stackIndex--;
 			}
 		} else {
 			// Operand
