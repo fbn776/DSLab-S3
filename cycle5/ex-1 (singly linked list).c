@@ -104,13 +104,34 @@ int deleteAt(Node *header, int at) {
 	return item;
 }
 
+
+void printLine(int len, char lineChar, char endsChar, int borderSpace, char borderChar) {
+	int i;
+	printf("%c", endsChar);
+	for (i = 0; i < len; i++)
+		printf("%c", ((i + 1) % borderSpace == 0) ? borderChar : lineChar);
+	printf("%c\n", endsChar);
+}
+
+
 void display(Node *header) {
 	Node *ptr = header;
 
 	while (ptr != NULL) {
-		printf("%d ", ptr->data);
+		//printf("%d ", ptr->data);
+		printLine(17, '-', '+', 9, '+');
+		printf("|%4d%4s|%4s%4s|\n", ptr->data, " ", " ", " ");
+		printLine(17, '-', '+', 9, '+');
+
+		printf("%15s\n", "|");
+		printf("%15s\n", "|");
+		printf("%15s\n", "|");
+
+		ptr->link != NULL ? (printf("%16s\n", "---"), printf("%15s\n", "-")) : printf("");
 		ptr = ptr->link;
 	}
+	printf("%18s\n", "-------");
+	printf("%17s\n", "-----");
 	printf("\n");
 }
 
@@ -147,7 +168,7 @@ int main() {
 			case 7:
 				display(header);
 				break;
-			case 8:
+			default:
 				ch = 'n';
 				break;
 		}
