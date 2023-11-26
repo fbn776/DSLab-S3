@@ -68,74 +68,51 @@ void displaySparse(SpareMatrix sm) {
 	printLine(29, '-', '*', 10, '-');
 }
 
-SpareMatrix add(SpareMatrix A, SpareMatrix B) {
-	int i = 0, j = 0, k = 0;
+SpareMatrix transpose(SpareMatrix A) {
 	SpareMatrix C;
-	if (A.t_rows != B.t_rows || A.t_cols != B.t_cols) {
-		printf("Cannot multiply; invalid order\n");
-		return C;
-	}
-
-	while (i <= A.t_elms && j <= B.t_elms) {
-		if (A.arr[i][0] == B.arr[j][0] && A.arr[i][1] == B.arr[j][1]) {
-			int result = A.arr[i++][2] + B.arr[j++][2];
-			if(result == 0) {
-				i++;
-				j++;
-				continue;
+	int col_a = A.t_cols;
+	int q = 0, i, j;
+	for(i = 0; i < col_a; i++) {
+		for(j = i; j < A.t_elms; j++) {
+			if(A.arr[j][1] == i) {
+				C.arr[q][0] = A.arr[j][1];
+				C.arr[q][1] = A.arr[j][0];
+				C.arr[q][2] = A.arr[j][2];
+				q++;
 			}
-
-			C.arr[k][0] = A.arr[i][0];
-			C.arr[k][1] = A.arr[i][1];
-			C.arr[k++][2] = result;
-		}
-		if ((A.arr[i][0] == B.arr[j][0] && A.arr[i][1] < B.arr[j][1]) || (A.arr[i][0] < B.arr[j][0])) {
-			C.arr[k][0] = A.arr[i][0];
-			C.arr[k][1] = A.arr[i][1];
-			C.arr[k++][2] = A.arr[i++][2];
-		}
-		if ((A.arr[i][0] == B.arr[j][0] && A.arr[i][1] > B.arr[j][1]) || (A.arr[i][0] > B.arr[j][0])) {
-			C.arr[k][0] = B.arr[j][0];
-			C.arr[k][1] = B.arr[j][1];
-			C.arr[k++][2] = B.arr[j++][2];
 		}
 	}
-
-	while (i <= A.t_elms) {
-		C.arr[k][0] = A.arr[i][0];
-		C.arr[k][1] = A.arr[i][1];
-		C.arr[k++][2] = A.arr[i++][2];
-	}
-
-	while (j <= B.t_elms) {
-		C.arr[k][0] = B.arr[j][0];
-		C.arr[k][1] = B.arr[j][1];
-		C.arr[k++][2] = B.arr[j++][2];
-	}
-
-	C.t_rows = A.t_rows;
-	C.t_cols = A.t_cols;
-	C.t_elms = k;
-
+	C.t_elms = A.t_elms;
+	C.t_cols = A.t_rows;
+	C.t_rows = A.t_cols;
 	return C;
 }
 
 int main() {
 	Matrix A, B;
-	SpareMatrix As, Bs, Cs;
+	SpareMatrix As, Bs, At, Bt, Cs;
 
 	readMatrix(&A);
 	readMatrix(&B);
 
+	/// Sparse matrix
 	As = convertToSparse(A);
 	Bs = convertToSparse(B);
-
 	printf("Sparse matrix of A:\n");
 	displaySparse(As);
-	printf("Sparse matrix of B:\n");
+	printf("SPare matrix of B:\n");
 	displaySparse(Bs);
 
-	Cs = add(As, Bs);
-	printf("Sparse matrix of A + B:\n");
-	displaySparse(Cs);
+	/// Transpose
+	At = transpose(As);
+	Bt = transpose(Bs);
+	printf("Transpose of A:\n");
+	displaySparse(At);
+	printf("Transpose of B:\n");
+	displaySparse(Bt);
+
+////	Cs = add(As, Bs);
+//	printf("Sparse matrix of A + B:\n");
+////	displaySparse(Cs);
+	
 }
