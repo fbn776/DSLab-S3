@@ -46,5 +46,38 @@
 
 ### Cycle - 4
 
-1. Write a program to read two polynomials and store them in an array. Calculate the sum of the two polynomials and display the first polynomial, second polynomial and the resultant polynomial.
-2. Write a program to enter two matrices in normal form. Write a function to convert two matrices to tuple form and display it. Also, find the transpose of the two matrices represented in tuple form and display it. Find the sum of the two matrices in tuple form and display the sum in tuple form.
+1. Write a program to read two polynomials and store them in an array. Calculate the sum of the two polynomials and display the first polynomial, the second polynomial and the resultant polynomial.
+2. Write a program to enter two matrices in normal form. Write a function to convert two matrices to a tuple form and display it. Also, find the transpose of the two matrices represented in tuple form and display it. Find the sum of the two matrices in tuple form and display the sum in tuple form.
+
+### Cycle - 5
+
+1. Write a menu-driven program for performing the following operations on a linked list
+   1. Display
+   2. Insert at beginning
+   3. Insert at the end
+   4. Insert at a specified position
+   5. Delete from the beginning
+   6. Delete from the end
+   7. Delete from a specified position
+2. Create a doubly linked list from a string taking each character from the string.
+   Check if the string is palindrome in an efficient method.
+3. Implement a stack using a linked list with the operations:
+   1. Push
+   2. Pop
+   3. Display the contents of the stack
+4. Implement a queue using linked lists with the following operations
+   1. Enqueue
+   2. Dequeue
+   3. Display the contents of the queue
+5. Write a program to reverse the contents of a queue using stack 
+6. Write a program to read two polynomials and store them using a linked list.
+   Calculate the sum of the two polynomials and display the first polynomial,
+   the second polynomial and the resultant polynomial.
+7. Write a program to read two polynomials and store them using a linked list.
+   Calculate the product of the two polynomials and display the first polynomial,
+   the second polynomial and the resultant polynomial.
+8. Write a program for addition of polynomials containing two variables using a linked list.
+   The terms of the
+      polynomials are ordered by the power of the first variable and then the second variable, in the descending
+      order.
+   Eg: 4.x^3.y^1 + 2.x^2.y^3 + 5.x^1.y^2+7.y^2+7.y^1+5
