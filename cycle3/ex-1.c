@@ -50,6 +50,36 @@ int getPrecedence(char ch) {
 	}
 }
 
+int ICP(char ch) {
+	switch (ch) {
+		case '+':
+		case '-':
+			return 1;
+		case '*':
+		case '/':
+			return 3;
+		case '^':
+			return 6;
+	}
+	return -1;
+}
+
+
+int ISP(char ch) {
+	switch (ch) {
+		case '+':
+		case '-':
+			return 2;
+		case '*':
+		case '/':
+			return 4;
+		case '^':
+			return 5;
+	}
+	return -1;
+}
+
+
 /**Converts infix to postfix**/
 int convertInfixToPostfix(char infix[], char postfix[]) {
 	char Stack[100], curr;
@@ -75,7 +105,7 @@ int convertInfixToPostfix(char infix[], char postfix[]) {
 			Push(Stack, &top, curr);
 		} else if (isOperator(curr)) {
 
-			while (top > -1 && getPrecedence(curr) <= getPrecedence(Stack[top])) {
+			while (top > -1 && ICP(curr) <= ISP(Stack[top])) {
 				char item = Pop(Stack, &top);
 				postfix[j++] = item;
 			}
