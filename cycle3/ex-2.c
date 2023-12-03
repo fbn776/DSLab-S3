@@ -1,20 +1,14 @@
 #include <stdio.h>
-#include <string.h>
-#define MAX_SIZE 100
-
-
-int StrLen(char str[]) {
-	int i = 0;
-	for(; str[i]; i++) ;
-	return i;
-}
 
 void StrRev(char str[]) {
-	int len = StrLen(str), i = 0, j;
-	for(j = len - 1; i < len/2; i++, j--) {
+	int i = 0, j = 0;
+	for(; str[j] != '\0'; j++);
+	j--;
+	while(i <= j) {
 		char temp = str[i];
 		str[i] = str[j];
 		str[j] = temp;
+		i++; j--;
 	}
 }
 
@@ -23,20 +17,9 @@ void Push(char s[], int *top, char item) {
 	s[++(*top)] = item;
 }
 
-void PushF(float s[], int *top, float item) {
-	s[++(*top)] = item;
-}
-
 char Pop(char s[], int *top) {
 	if (*top == -1)
 		return '\0';
-
-	return s[(*top)--];
-}
-
-float PopF(float s[], int *top) {
-	if (*top == -1)
-		return 0;
 
 	return s[(*top)--];
 }
@@ -51,78 +34,90 @@ int isOperator(char ch) {
 	return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
-/**Gets the precedence of an operator**/
-int getPrecedence(char ch) {
+int ICP(char ch) {
 	switch (ch) {
 		case '+':
 		case '-':
 			return 1;
 		case '*':
 		case '/':
-			return 2;
-		case '^':
 			return 3;
-		default:
-			return 0;
+		case '^':
+			return 6;
 	}
+	return -1;
 }
 
-/**Converts infix to prefix**/
-int convertInfixToPrefix(char infix[], char prefix[]) {
-	char revInfix[100];
-	strcpy(revInfix, infix);
-	StrRev(revInfix);
 
+int ISP(char ch) {
+	switch (ch) {
+		case '+':
+		case '-':
+			return 2;
+		case '*':
+		case '/':
+			return 4;
+		case '^':
+			return 5;
+	}
+	return -1;
+}
+
+
+/**Converts infix to postfix**/
+int convertInfixToPostfix(char infix[], char postfix[]) {
 	char Stack[100], curr;
 	int top = -1, len = 0, i, j = 0;
 
 	//Find length
-	for (; revInfix[len] != '\0'; len++);
+	for (; infix[len] != '\0'; len++);
 
 	//Add initial brackets
 	Push(Stack, &top, '(');
-	revInfix[len++] = ')';
-	revInfix[len] = '\0';
+	infix[len++] = ')';
+	infix[len] = '\0';
 
-	for (i = 0; revInfix[i] != '\0'; i++) {
-		curr = revInfix[i];
+	for (i = 0; infix[i] != '\0'; i++) {
+		curr = infix[i];
 		if (curr == ' ' || curr == '\t')
 			continue;
 
+
 		if (isOperand(curr)) {
-			prefix[j++] = curr;
+			postfix[j++] = curr;
 		} else if (curr == '(') {
 			Push(Stack, &top, curr);
 		} else if (isOperator(curr)) {
 
-			while (top > -1 && getPrecedence(curr) <= getPrecedence(Stack[top])) {
+			while (top > -1 && ICP(curr) <= ISP(Stack[top])) {
 				char item = Pop(Stack, &top);
-				prefix[j++] = item;
+				postfix[j++] = item;
 			}
 			Push(Stack, &top, curr);
 
 		} else if (curr == ')') {
 			while (top > -1 && Stack[top] != '(') {
 				char item = Pop(Stack, &top);
-				prefix[j++] = item;
+				postfix[j++] = item;
 			}
 			Pop(Stack, &top);
 		} else {
 			return 0;
 		}
 	}
-	StrRev(prefix);
-	prefix[j] = '\0';
+	postfix[j] = '\0';
 	return 1;
 }
 
 int main() {
-	char infix[MAX_SIZE], prefix[MAX_SIZE];
-	printf("Enter the infix expression: ");
+	char infix[100], prefix[100];
+	printf("Enter infix: ");
 	scanf(" %[^\n]", infix);
 
-	convertInfixToPrefix(infix, prefix);
-	printf("The prefix expression is: %s\n", prefix);
+	StrRev(infix);
+	printf("Infix rev: %s\n", infix);
 
-	return 0;
+	convertInfixToPostfix(infix, prefix);
+	StrRev(prefix);
+	printf("Prefix: %s\n", prefix);
 }

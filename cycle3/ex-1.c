@@ -34,22 +34,6 @@ int isOperator(char ch) {
 	return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
-/**Gets the precedence of an operator**/
-int getPrecedence(char ch) {
-	switch (ch) {
-		case '+':
-		case '-':
-			return 1;
-		case '*':
-		case '/':
-			return 2;
-		case '^':
-			return 3;
-		default:
-			return 0;
-	}
-}
-
 int ICP(char ch) {
 	switch (ch) {
 		case '+':
