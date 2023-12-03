@@ -5,6 +5,10 @@ typedef struct {
 	int exp;
 } Term;
 
+typedef struct {
+	int order;
+	Term ply[10];
+} Poly;
 
 void readPoly(Term A[], int *n) {
 	printf("Enter order: ");
@@ -69,15 +73,45 @@ void add(Term A[], int a, Term B[], int b, Term C[], int *c) {
 	*c = a > b ? a : b;
 }
 
+void mult(Term A[], int a, Term B[], int b, Term C[], int *c) {
+	Poly terms[10];
+	int k = 0, i, j, m = 0;
+
+	for(i = 0; i <= a; i++) {
+		m = 0;
+		for(j = 0; j <= b; j++) {
+			terms[k].ply[m].coeff = A[i].coeff * B[j].coeff;
+			terms[k].ply[m].exp = A[i].exp + B[j].exp;
+			m++;
+		}
+		terms[k].order = m - 1;
+		k++;
+	}
+
+
+//	Term C[10];
+//	int c;
+//	C = terms[0].ply;
+//
+//	for(i = 0; i < k; i++) {
+//
+//	}
+}
+
 int main() {
-	Term A[10], B[10], C[10];
-	int a, b, c;
+	Term A[10], B[10], C[10], D[10];
+	int a, b, c, d;
 
 	readPoly(A, &a);
 	display(A, a);
 	readPoly(B, &b);
 	display(B, b);
 
-	add(A, a, B, b, C, &c);
-	display(C, c);
+	printf("\n");
+
+//
+//	add(A, a, B, b, C, &c);
+//	display(C, c);
+
+	mult(A, a, B, b, D, &d);
 }
