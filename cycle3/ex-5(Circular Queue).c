@@ -23,7 +23,7 @@ int Dequeue(int Q[], int *front, int *rear) {
 		*front = ((*front) + 1) % SIZE;
 
 		if (*front == ((*rear) + 1) % SIZE)
-			*front = (*rear) - 1;
+			*front = (*rear) = -1;
 
 		return item;
 	}
