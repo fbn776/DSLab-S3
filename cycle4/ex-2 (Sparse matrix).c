@@ -1,118 +1,114 @@
 #include <stdio.h>
 
-typedef struct {
-	int arr[10][10], m, n;
-} Matrix;
+void readSparse(int R[][3]) {
+	int m, n, A[10][10], i, j, t_elms = 0, k = 1;
 
-typedef struct {
-	int t_cols, t_rows, t_elms;
-	int arr[100][3];
-} SpareMatrix;
+	printf("Enter m n: ");
+	scanf("%d %d", &m, &n);
 
-/**Prints a line to the stdout
- * @param len The length of the line
- * @param lineChar The character to be used for the lines
- * @param endsChar The character to be used at both ends (start and end)
- * @param borderSpace The space between each border. A special character is placed there
- * @param borderChar The character to be inserted at the borders
- */
-void printLine(int len, char lineChar, char endsChar, int borderSpace, char borderChar) {
-	int i;
-	printf("%c", endsChar);
-	for (i = 0; i < len; i++)
-		printf("%c", ((i + 1) % borderSpace == 0) ? borderChar : lineChar);
-	printf("%c\n", endsChar);
-}
+	printf("Enter matrix:\n");
+	for (i = 0; i < m; i++)
+		for (j = 0; j < n; j++)
+			scanf(" %d", &A[i][j]);
 
-void readMatrix(Matrix *A) {
-	int i, j;
-	printf("Enter order (m n): ");
-	scanf(" %d %d", &(A->m), &(A->n));
-	printf("Enter elements:\n");
-	for (i = 0; i < A->m; i++)
-		for (j = 0; j < A->n; j++)
-			scanf(" %d", &(A->arr[i][j]));
-}
-
-SpareMatrix convertToSparse(Matrix A) {
-	int c = 0, i, j;
-	SpareMatrix sm;
-
-	sm.t_rows = A.m;
-	sm.t_cols = A.n;
-
-	for (i = 0; i < A.m; i++)
-		for (j = 0; j < A.n; j++) {
-			if (A.arr[i][j] != 0) {
-				sm.arr[c][0] = i;
-				sm.arr[c][1] = j;
-				sm.arr[c++][2] = A.arr[i][j];
+	//Conversion to sparse;
+	for (i = 0; i < m; i++)
+		for (j = 0; j < n; j++) {
+			if(A[i][j] != 0) {
+				R[k][0] = i;
+				R[k][1] = j;
+				R[k][2] = A[i][j];
+				k++;
+				t_elms++;
 			}
 		}
-	sm.t_elms = c;
-	return sm;
+
+	R[0][0] = m;
+	R[0][1] = n;
+	R[0][2] = t_elms;
 }
 
-void displaySparse(SpareMatrix sm) {
-	int i;
-
-	printLine(29, '-', '*', 10, '-');
-	printf("|%8s |%8s |%8s |\n", "Rows", "Cols", "Value");
-	printLine(29, '=', '|', 10, '|');
-	printf("|%8d |%8d |%8d |\n", sm.t_rows, sm.t_cols, sm.t_elms);
-	printLine(29, '-', '|', 10, '|');
-	for (i = 0; i < sm.t_elms; i++) {
-		printf("|%8d |%8d |%8d |\n", sm.arr[i][0], sm.arr[i][1], sm.arr[i][2]);
-		i == sm.t_elms - 1 ?: printLine(29, '-', '|', 10, '|');
-	}
-	printLine(29, '-', '*', 10, '-');
-}
-
-SpareMatrix transpose(SpareMatrix A) {
-	SpareMatrix C;
-	int col_a = A.t_cols;
-	int q = 0, i, j;
-	for(i = 0; i < col_a; i++) {
-		for(j = i; j < A.t_elms; j++) {
-			if(A.arr[j][1] == i) {
-				C.arr[q][0] = A.arr[j][1];
-				C.arr[q][1] = A.arr[j][0];
-				C.arr[q][2] = A.arr[j][2];
+void transpose(int A[][3], int B[][3]) {
+	int i, j, q = 1;
+	for(i = 0; i < A[0][1]; i++)
+		for(j = 1; j <= A[0][2]; j++) {
+			if(A[j][1] == i) {
+				B[q][0] = A[j][1];
+				B[q][1] = A[j][0];
+				B[q][2] = A[j][2];
 				q++;
 			}
 		}
+
+	B[0][0] = A[0][1];
+	B[0][1] = A[0][0];
+	B[0][2] = A[0][2];
+}
+
+void add(int A[][3], int B[][3], int C[][3]) {
+	if(A[0][0] != B[0][0] || A[0][1] != B[0][1])
+		return;
+
+	int i = 1, j = 1, k = 1;
+	while(i <= A[0][2] && j <= B[0][2]) {
+		if(A[i][0] == B[j][0] && A[i][1] == B[j][1]) {
+			C[k][0] = A[i][0];
+			C[k][1] = A[i][1];
+			C[k][2] = A[i][2] + B[j][2];
+			k++; i++; j++;
+		} else if((A[i][0] < B[j][0]) || (A[i][0] == B[j][0] && A[i][1] < B[j][1])) {
+			C[k][0] = A[i][0];
+			C[k][1] = A[i][1];
+			C[k][2] = A[i][2];
+			k++; i++;
+		} else {
+			C[k][0] = B[j][0];
+			C[k][1] = B[j][1];
+			C[k][2] = B[j][2];
+			k++; j++;
+		}
 	}
-	C.t_elms = A.t_elms;
-	C.t_cols = A.t_rows;
-	C.t_rows = A.t_cols;
-	return C;
+
+	while(i <= A[0][2]) {
+		C[k][0] = A[i][0];
+		C[k][1] = A[i][1];
+		C[k][2] = A[i][2];
+		k++; i++;
+	}
+
+	while(j <= B[0][2]) {
+		C[k][0] = B[j][0];
+		C[k][1] = B[j][1];
+		C[k][2] = B[j][2];
+		k++; j++;
+	}
+
+	C[0][0] = A[0][0];
+	C[0][1] = A[0][1];
+	C[0][2] = k - 1;
+}
+
+void display(int A[][3], char title[]) {
+	printf("%s\n", title);
+	int i;
+	for(i = 0; i < A[0][2] + 1; i++)
+		printf("%5d %5d %5d\n", A[i][0], A[i][1], A[i][2]);
 }
 
 int main() {
-	Matrix A, B;
-	SpareMatrix As, Bs, At, Bt, Cs;
+	int A[100][3], B[100][3], At[100][3], Bt[100][3], C[100][3];
 
-	readMatrix(&A);
-	readMatrix(&B);
+	readSparse(A);
+	readSparse(B);
+	display(A, "Matrix A");
+	display(B, "Matrix B");
 
-	/// Sparse matrix
-	As = convertToSparse(A);
-	Bs = convertToSparse(B);
-	printf("Sparse matrix of A:\n");
-	displaySparse(As);
-	printf("SPare matrix of B:\n");
-	displaySparse(Bs);
+	transpose(A, At);
+	display(At, "A transpose");
 
-	/// Transpose
-	At = transpose(As);
-	Bt = transpose(Bs);
-	printf("Transpose of A:\n");
-	displaySparse(At);
-	printf("Transpose of B:\n");
-	displaySparse(Bt);
+	transpose(B, Bt);
+	display(Bt, "B transpose");
 
-////	Cs = add(As, Bs);
-//	printf("Sparse matrix of A + B:\n");
-////	displaySparse(Cs);
-	
+	add(A, B, C);
+	display(C, "Resultant");
 }
