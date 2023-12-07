@@ -115,8 +115,6 @@ int main() {
 	scanf(" %[^\n]", infix);
 
 	StrRev(infix);
-	printf("Infix rev: %s\n", infix);
-
 	convertInfixToPostfix(infix, prefix);
 	StrRev(prefix);
 	printf("Prefix: %s\n", prefix);
