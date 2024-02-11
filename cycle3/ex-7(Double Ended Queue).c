@@ -1,152 +1,119 @@
 #include <stdio.h>
+#define SIZE 10
+#define ERROR -99999
 
-#define MAX_SIZE 100
 
-typedef struct {
-	int data[MAX_SIZE];
-	int front, rear;
-} Deque;
-
-void initializeDeque(Deque *dq) {
-	dq->front = -1;
-	dq->rear = -1;
+int isFull(int f, int r) {
+	return ((f == 0) && (r == SIZE - 1)) || (f == (r + 1));
 }
 
-int isFull(Deque *dq) {
-	return ((dq->front == 0 && dq->rear == MAX_SIZE - 1) || (dq->front == dq->rear + 1));
-}
-
-int isEmpty(Deque *dq) {
-	return (dq->front == -1);
-}
-
-void insertFront(Deque *dq, int element) {
-	if (isFull(dq)) {
-		printf("Deque is full, cannot insert at front.\n");
+void insertFront(int Q[], int *f, int *r, int data) {
+	if(isFull(*f, *r)) {
+		printf("Queue full\n");
 		return;
 	}
 
-	if (isEmpty(dq)) {
-		dq->front = 0;
-		dq->rear = 0;
-	} else if (dq->front == 0) {
-		dq->front = MAX_SIZE - 1;
+	if(*f == -1) {
+		*f = *r = 0;
+	} else if(*f == 0) {
+		*f = SIZE - 1;
 	} else {
-		dq->front--;
+		(*f)--;
 	}
 
-	dq->data[dq->front] = element;
+	Q[*f] = data;
 }
 
-void insertRear(Deque *dq, int element) {
-	if (isFull(dq)) {
-		printf("Deque is full, cannot insert at rear.\n");
-		return;
-	}
-
-	if (isEmpty(dq)) {
-		dq->front = 0;
-		dq->rear = 0;
-	} else if (dq->rear == MAX_SIZE - 1) {
-		dq->rear = 0;
+void deleteFront(int Q[], int *f, int *r) {
+	if(*f == -1) {
+		printf("Queue empty\n");
 	} else {
-		dq->rear++;
-	}
-
-	dq->data[dq->rear] = element;
-}
-
-int deleteFront(Deque *dq) {
-	if (isEmpty(dq)) {
-		printf("Deque is empty, cannot delete from front.\n");
-		return -1;
-	}
-
-	int removedElement = dq->data[dq->front];
-
-	if (dq->front == dq->rear) {
-		dq->front = -1;
-		dq->rear = -1;
-	} else {
-		if (dq->front == MAX_SIZE - 1) {
-			dq->front = 0;
-		} else {
-			dq->front++;
+		int item = Q[*f];
+		*f = (*f + 1) % SIZE;
+		if(*f == (*r + 1) % SIZE) {
+			*f = *r = -1;
 		}
+		printf("Dequeued -> %d\n", item);
 	}
-
-	return removedElement;
 }
 
-int deleteRear(Deque *dq) {
-	if (isEmpty(dq)) {
-		printf("Deque is empty, cannot delete from rear.\n");
-		return -1;
-	}
-
-	int removedElement = dq->data[dq->rear];
-
-	if (dq->front == dq->rear) {
-		dq->front = -1;
-		dq->rear = -1;
+void insertRear(int Q[], int *f, int *r, int data) {
+	if(isFull(*f, *r)) {
+		printf("Queue is full\n");
 	} else {
-		if (dq->rear == 0) {
-			dq->rear = MAX_SIZE - 1;
-		} else {
-			dq->rear--;
-		}
+		if(*f == -1)
+			*f = *r = 0;
+		*r = (*r + 1) % SIZE;
+		Q[*r] = data;
 	}
-	return removedElement;
 }
 
-void displayDeque(Deque *dq) {
-	if (isEmpty(dq)) {
-		printf("Deque is empty.\n");
-		return;
-	}
+void deleteRear(int Q[], int *f, int *r) {
+	if(*f == -1) {
+		printf("Queue is empty\n");
+	} else {
+		int item = Q[*r];
+		if(*r == *f) {
+			*r = *f = -1;
+		} else if(*r == 0 && *f > *r) {
+			*r = SIZE - 1;
+		} else {
+			(*r)--;
+		}
 
-	printf("Deque elements: ");
-	int i = dq->front;
-	do {
-		printf("%d ", dq->data[i]);
-		i = (i + 1) % MAX_SIZE;
-	} while (i != (dq->rear + 1) % MAX_SIZE);
+		printf("Dequeued -> %d\n", item);
+	}
+}
+
+void display(int Q[], int f, int r) {
+	int i;
+	if(f == -1)
+		printf("Queue is empty");
+	else if(f > r) {
+		for(i = f; i < SIZE; i++)
+			printf("%d ", Q[i]);
+		for(i = 0; i <= r; i++)
+			printf("%d ", Q[i]);
+	} else
+		for(i = f; i <= r; i++)
+			printf("%d ", Q[i]);
+
 	printf("\n");
 }
 
 int main() {
-	Deque deque;
-	char choice, cnt = 'Y';
-	int item;
-	initializeDeque(&deque);
+	int Q[SIZE], f = -1, r = -1;
+	int choice, item;
 
-	printf("===Choices===\n1 - Insert front\n2 - Insert rear\n3 - Delete front\n4 - Delete rear\n5 - Display\n6 - Exit\n");
+	printf("Choices\n1 - Insert front\n2 - Delete front\n3 - Insert rear\n4 - Delete rear\n5 - Display\n6 - Exit\n");
 
-	while (cnt == 'Y') {
-		printf("Enter choice: ");
+	while(1) {
+		printf("> ");
 		scanf(" %d", &choice);
-		switch (choice) {
+
+		switch(choice) {
 			case 1:
-				printf("Enter item: ");
+				printf("Insert front: ");
 				scanf(" %d", &item);
-				insertFront(&deque, item);
-				break;
+				insertFront(Q, &f, &r, item);
+			break;
 			case 2:
-				printf("Enter item: ");
-				scanf(" %d", &item);
-				insertRear(&deque, item);
-				break;
+				deleteFront(Q, &f, &r);
+			break;
 			case 3:
-				printf("%d\n", deleteFront(&deque));
-				break;
+				printf("Insert rear: ");
+				scanf(" %d", &item);
+				insertRear(Q, &f, &r, item);
+			break;
 			case 4:
-				printf("%d\n", deleteRear(&deque));
-				break;
+				deleteRear(Q, &f, &r);
+			break;
 			case 5:
-				displayDeque(&deque);
+				display(Q, f, r);
 				break;
 			default:
-				cnt = 'N';
+				return 0;
 		}
 	}
 }
+
